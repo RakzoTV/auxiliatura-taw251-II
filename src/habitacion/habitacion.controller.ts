@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { HabitacionService } from './habitacion.service.js';
 import { CreateHabitacionDto } from './dto/create-habitacion.dto.js';
 import { UpdateHabitacionDto } from './dto/update-habitacion.dto.js';
@@ -18,17 +18,17 @@ export class HabitacionController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.habitacionService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.habitacionService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHabitacionDto: UpdateHabitacionDto) {
-    return this.habitacionService.update(+id, updateHabitacionDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateHabitacionDto: UpdateHabitacionDto) {
+    return this.habitacionService.update(id, updateHabitacionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.habitacionService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.habitacionService.remove(id);
   }
 }

@@ -3,10 +3,18 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { HabitacionModule } from './habitacion/habitacion.module.js';
 import { ReservaModule } from './reserva/reserva.module.js';
+import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module.js';
 
 @Module({
-  imports: [HabitacionModule, ReservaModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    DatabaseModule,
+    HabitacionModule,
+    ReservaModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
