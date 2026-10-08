@@ -73,9 +73,6 @@ export class HabitacionService {
     return habitacion;*/
 
     const habitacion = await this.findOne(id);
-    if(!habitacion){
-      throw new NotFoundException("habitacion no encontrada")
-    }
 
     const nuevaHabitacion = {...habitacion, ...updateHabitacionDto}
     await this.dbPool.query(
@@ -107,10 +104,6 @@ export class HabitacionService {
     }*/
 
     const habitacion = await this.findOne(id);
-
-    if(!habitacion){
-      throw new NotFoundException("habitacion no encontrada")
-    }
 
     const [resultado] = await this.dbPool.query<ResultSetHeader>
     ("DELETE FROM habitaciones WHERE idHabitacion = ?", [id]);  
