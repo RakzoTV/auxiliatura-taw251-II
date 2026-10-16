@@ -1,8 +1,9 @@
-import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
 
 export class CreateHabitacionDto {
     @IsNotEmpty()
     @IsString()
+    @Length(3, 32)
     nombre: string;
 
     @IsNotEmpty()
@@ -20,5 +21,6 @@ export class CreateHabitacionDto {
 
     @IsNotEmpty()
     @IsString()
+    @Length(3, 255)
     descripcion: string;
 }

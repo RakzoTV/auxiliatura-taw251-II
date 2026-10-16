@@ -2,13 +2,13 @@ import { Injectable, NotFoundException, PreconditionFailedException } from '@nes
 import { CreateReservaDto } from './dto/create-reserva.dto.js';
 import { UpdateReservaDto } from './dto/update-reserva.dto.js';
 import { reservaData } from './entities/reserva.data.js';
-import { Habitaciones } from '../habitacion/entities/habitacion.data.js';
+
 
 @Injectable()
 export class ReservaService {
-  create(createReservaDto: CreateReservaDto) {
+  /*create(createReservaDto: CreateReservaDto) {
 
-    const habitacion = Habitaciones.find((h) => h.idHabitacion === createReservaDto.habitacionId)
+    /*const habitacion = Habitaciones.find((h) => h.idHabitacion === createReservaDto.habitacionId)
 
     if(!habitacion){
       throw new NotFoundException("Habitacion no encontrada")
@@ -56,5 +56,5 @@ export class ReservaService {
 
   remove(id: number) {
     return `This action removes a #${id} reserva`;
-  }
-}
+  }*/
+ }

@@ -1,123 +1,66 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHabitacionDto } from './dto/create-habitacion.dto.js';
 import { UpdateHabitacionDto } from './dto/update-habitacion.dto.js';
-import { Habitaciones } from './entities/habitacion.data.js';
+
 import { DB_POOL } from '../database/database.module.js';
 import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Habitacion } from './entities/habitacion.entity.js';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class HabitacionService {
 
   constructor(
-    @Inject(DB_POOL) private readonly dbPool: Pool
+    @InjectRepository(Habitacion)
+    private readonly habitacionRepository: Repository<Habitacion>
   ){}
 
   async create(createHabitacionDto: CreateHabitacionDto) {
-    /*const nuevaHabitacion = {
-      ...createHabitacionDto,
-      idHabitacion: createHabitacionDto.idHabitacion
-    }
-    Habitaciones.push(nuevaHabitacion)
-    return nuevaHabitacion;*/
+    //Paso 1 crear el registro con los datos que vengan del dto
+      const habitacion = this.habitacionRepository.create(createHabitacionDto);
 
-    const [resultado] = await this.dbPool.query<ResultSetHeader>(
-      "INSERT INTO habitaciones(nombre, tipo, precioPorNoche, capacidad, descripcion)" + 
-      " VALUES (?,?,?,?,?)", 
-      [createHabitacionDto.nombre,
-      createHabitacionDto.tipo,
-      createHabitacionDto.precioPorNoche,
-      createHabitacionDto.capacidad,
-      createHabitacionDto.descripcion
-      ]
-    )
-
-    const resultadoId = resultado.insertId;
-    return {
-      resultadoId: resultadoId,
-      ...createHabitacionDto
-    }
+      //Paso 2 guardar el registro en la bd
+      return await this.habitacionRepository.save(habitacion);
+      //el save por detras hace INSERT INTO habitaciones(nombre, tipo, precioPorNoche, capacidad, descripcion) VALUES (?,?,?,?,?)
+      //con los valores del create/dto y devuelve el registro que se guardo en la bd con el idHabitacion generado por la bd
   }
 
   async findAll() {
-    //return Habitaciones;
-
-    const [filas] = await this.dbPool.query<RowDataPacket[]>
-    ("SELECT * FROM habitaciones");
-
-    return filas;
+    //por detras el find hace: SELECT * FROM habitaciones
+    return await this.habitacionRepository.find();
   }
 
   async findOne(id: number) {
-    /*const habitacion = Habitaciones.find((h) => h.idHabitacion === id);
-    if (!habitacion) {
-      throw new NotFoundException('Habitación no encontrada');
-    }
-    return habitacion;*/
 
-    const [habitacion] = await this.dbPool.query<RowDataPacket[]>
-    ("SELECT * FROM habitaciones WHERE idHabitacion = ?", [id])
-
-    if (habitacion.length === 0){
+    //findOneBy por detras hace SELECT * FROM habitaciones WHERE idHabitacion = ?
+    const habitacion = await this.habitacionRepository.findOneBy({idHabitacion: id})
+    if(!habitacion){
       throw new NotFoundException("habitacion no encontrada")
     }
 
-    return habitacion[0]
+    return habitacion;
   }
 
   async update(id: number, updateHabitacionDto: UpdateHabitacionDto) {
-    /*const habitacion = Habitaciones.find((h) => h.idHabitacion === id);
-    if (!habitacion) {
-      throw new NotFoundException('Habitación no encontrada');
-    }
-    Object.assign(habitacion, updateHabitacionDto);
-    return habitacion;*/
 
-    const habitacion = await this.findOne(id);
-    if(!habitacion){
-      throw new NotFoundException("habitacion no encontrada")
-    }
+    //Paso 1 verificar que la habitacion exista
+    await this.findOne(id);
 
-    const nuevaHabitacion = {...habitacion, ...updateHabitacionDto}
-    await this.dbPool.query(
-      "UPDATE habitaciones SET nombre = ?, tipo = ?, precioPorNoche = ?, capacidad = ?, descripcion = ?" +
-      " WHERE idHabitacion = ?",
-      [nuevaHabitacion.nombre, 
-        nuevaHabitacion.tipo, 
-        nuevaHabitacion.precioPorNoche, 
-        nuevaHabitacion.capacidad, 
-        nuevaHabitacion.descripcion, 
-        id]
-    )
-
-    return {
-      mensaje: "habitacion actualizada",
-      nuevaHabitacion: nuevaHabitacion
-    }
-    
+    //Paso 2 actualizar la habitacion
+    const habitacionUpdated = await this.habitacionRepository.update(id, updateHabitacionDto)
+    //por detras hace UPDATE habitaciones SET nombre = ?, tipo = ?, precioPorNoche = ?, capacidad = ?, descripcion = ? WHERE idHabitacion = ?
+    //con los datos que vengan en el dto y el id de la habitacion a actualizar
+    return habitacionUpdated;
   }
 
   async remove(id: number) {
-    /*const habitacion = Habitaciones.find((h) => h.idHabitacion === id);
-    if (!habitacion) {
-      throw new NotFoundException('Habitación no encontrada');
-    }
-    const index = Habitaciones.indexOf(habitacion);
-    if (index !== -1) {
-      Habitaciones.splice(index, 1);
-    }*/
 
-    const habitacion = await this.findOne(id);
+    //Paso 1 verificar que la habitacion exista
+    await this.findOne(id);
 
-    if(!habitacion){
-      throw new NotFoundException("habitacion no encontrada")
-    }
-
-    const [resultado] = await this.dbPool.query<ResultSetHeader>
-    ("DELETE FROM habitaciones WHERE idHabitacion = ?", [id]);  
-
-    return {
-      mensaje: "habitacion eliminada",
-      filas_afectadas: resultado.affectedRows
-    } 
+    //Paso 2 eliminar la habitacion
+    return await this.habitacionRepository.delete(id);
+    //por detras hace DELETE FROM habitaciones WHERE idHabitacion = ?
   }
 }

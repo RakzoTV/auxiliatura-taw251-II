@@ -7,7 +7,7 @@ import { UpdateReservaDto } from './dto/update-reserva.dto.js';
 export class ReservaController {
   constructor(private readonly reservaService: ReservaService) {}
 
-  @Post()
+  /*@Post()
   create(@Body() createReservaDto: CreateReservaDto) {
     return this.reservaService.create(createReservaDto);
   }
@@ -30,5 +30,5 @@ export class ReservaController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reservaService.remove(+id);
-  }
+  }*/
 }
