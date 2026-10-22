@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, type Relation } from "typeorm";
+import { DetalleHabitacion } from "../../detalle_habitacion/entities/detalle_habitacion.entity.js";
 
 @Entity()
 export class Habitacion {
@@ -9,7 +10,7 @@ export class Habitacion {
     @Column({length: 32})
     nombre: string;
 
-    @Column()
+    @Column({type: "enum", enum: ["individual", "doble", "suite"]})
     tipo: "individual" | "doble" | "suite";
 
     @Column({type: "decimal", precision: 10, scale: 2})  //10.25
@@ -20,5 +21,8 @@ export class Habitacion {
 
     @Column({length: 255})
     descripcion: string;
+
+    @OneToOne(() => DetalleHabitacion, (detalleHabitacion) => detalleHabitacion.habitacion)
+    detalleHabitacion: Relation<DetalleHabitacion>;
 
 }

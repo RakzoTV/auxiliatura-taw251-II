@@ -6,6 +6,9 @@ import { ReservaModule } from './reserva/reserva.module.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsuarioModule } from './usuario/usuario.module.js';
+import { RolModule } from './rol/rol.module.js';
+import { DetalleHabitacionModule } from './detalle_habitacion/detalle_habitacion.module.js';
 
 @Module({
   imports: [
@@ -27,7 +30,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     //DatabaseModule,
     HabitacionModule,
-    ReservaModule],
+    ReservaModule,
+    UsuarioModule,
+    RolModule,
+    DetalleHabitacionModule],
   controllers: [AppController],
   providers: [AppService],
 })

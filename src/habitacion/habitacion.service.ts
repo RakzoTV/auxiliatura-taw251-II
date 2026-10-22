@@ -28,7 +28,7 @@ export class HabitacionService {
 
   async findAll() {
     //por detras el find hace: SELECT * FROM habitaciones
-    return await this.habitacionRepository.find();
+    return await this.habitacionRepository.find({relations: {detalleHabitacion: true}});
   }
 
   async findOne(id: number) {
@@ -38,6 +38,8 @@ export class HabitacionService {
     if(!habitacion){
       throw new NotFoundException("habitacion no encontrada")
     }
+
+    
 
     return habitacion;
   }
