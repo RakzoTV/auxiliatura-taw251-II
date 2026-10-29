@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto.js';
 import { UpdateReservaDto } from './dto/update-reserva.dto.js';
-import { reservaData } from './entities/reserva.data.js';
 
 
 @Injectable()
