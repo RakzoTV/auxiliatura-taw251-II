@@ -1,59 +1,51 @@
-import { Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Reserva } from './entities/reserva.entity.js';
+import { Repository } from 'typeorm';
 import { UpdateReservaDto } from './dto/update-reserva.dto.js';
-
+import { Habitacion } from '../habitacion/entities/habitacion.entity.js';
 
 @Injectable()
 export class ReservaService {
-  /*create(createReservaDto: CreateReservaDto) {
+    constructor(
+        @InjectRepository(Reserva)
+        private readonly reservaRepository: Repository<Reserva>,
 
-    /*const habitacion = Habitaciones.find((h) => h.idHabitacion === createReservaDto.habitacionId)
+        @InjectRepository(Habitacion)
+        private readonly habitacionRepository: Repository<Habitacion>
+    ){}
 
-    if(!habitacion){
-      throw new NotFoundException("Habitacion no encontrada")
+    async create(createReservaDto: CreateReservaDto) {
+        const habitacion = await this.habitacionRepository
+        .findOneBy({ idHabitacion: createReservaDto.idHabitacion})
+
+        if(!habitacion){
+            throw new NotFoundException("La habitacion no existe")
+        }
+
+        const reserva = await this.reservaRepository.create({
+            ...createReservaDto,
+            idHabitacion: habitacion.idHabitacion
+        })
+
+        return await this.reservaRepository.save(reserva)
     }
 
-    if(createReservaDto.fechaCheckOut <= createReservaDto.fechaCheckIn){
-      throw new PreconditionFailedException("La fecha de check-out debe ser posterior a la fecha de check-in")
+    async findAll() {
+        //find por detras hace SELECT * FROM reservas
+        return this.reservaRepository.find();
     }
 
-    if(createReservaDto.cantidadHuespedes > habitacion.capacidad){
-      throw new PreconditionFailedException(`La cantidad de huéspedes excede la capacidad de la habitación: ${habitacion.capacidad}`)
+    async findOne(id: number) {
+        return `This action returns a #${id} reserva`;
     }
-    
 
-    const noches = createReservaDto.fechaCheckIn && createReservaDto.fechaCheckOut
-      ? Math.ceil((createReservaDto.fechaCheckOut.getTime() - createReservaDto.fechaCheckIn.getTime()) / (1000 * 60 * 60 * 24))
-      : 0;
-
-    const precioTotal = noches * habitacion.precioPorNoche;
-
-    const nuevaReserva = {
-      ...createReservaDto,
-      precioTotal: precioTotal,
-      idReserva: createReservaDto.idReserva
+    async update(id: number, updateReservaDto: UpdateReservaDto) {
+        return `This action updates a #${id} reserva`;
     }
-    reservaData.push(nuevaReserva)
-    return  {
-      ...nuevaReserva,
-      precioTotal: precioTotal,
-      noches: noches
-    };
-  }
 
-  findAll() {
-    return reservaData;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} reserva`;
-  }
-
-  update(id: number, updateReservaDto: UpdateReservaDto) {
-    return `This action updates a #${id} reserva`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} reserva`;
-  }*/
- }
+    async remove(id: number) {
+        return `This action removes a #${id} reserva`;
+    }
+}

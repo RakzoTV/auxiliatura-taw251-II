@@ -9,6 +9,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsuarioModule } from './usuario/usuario.module.js';
 import { RolModule } from './rol/rol.module.js';
 import { DetalleHabitacionModule } from './detalle_habitacion/detalle_habitacion.module.js';
+import { ProductoModule } from './producto/producto.module.js';
+import { CategoriaModule } from './categoria/categoria.module.js';
+import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module.js';
+import { PedidoModule } from './pedido/pedido.module.js';
 
 @Module({
   imports: [
@@ -18,7 +22,7 @@ import { DetalleHabitacionModule } from './detalle_habitacion/detalle_habitacion
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: "mysql",
+        type: "postgres",
         host: config.get<string>("DB_HOST"),
         port: Number(config.get("DB_PORT")),
         username: config.get<string>("DB_USER"),
@@ -33,7 +37,11 @@ import { DetalleHabitacionModule } from './detalle_habitacion/detalle_habitacion
     ReservaModule,
     UsuarioModule,
     RolModule,
-    DetalleHabitacionModule],
+    DetalleHabitacionModule,
+    ProductoModule,
+    CategoriaModule,
+    DetallePedidoModule,
+    PedidoModule],
   controllers: [AppController],
   providers: [AppService],
 })

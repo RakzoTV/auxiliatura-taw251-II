@@ -28,7 +28,8 @@ export class HabitacionService {
 
   async findAll() {
     //por detras el find hace: SELECT * FROM habitaciones
-    return await this.habitacionRepository.find({relations: {detalleHabitacion: true}});
+    return await this.habitacionRepository
+    .find({relations: {detalleHabitacion: true, reservas: true}, });
   }
 
   async findOne(id: number) {
