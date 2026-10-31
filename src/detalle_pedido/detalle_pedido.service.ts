@@ -6,7 +6,7 @@ import { DetallePedido } from './entities/detalle_pedido.entity.js';
 import { Repository } from 'typeorm';
 import { Pedido } from '../pedido/entities/pedido.entity.js';
 import { Producto } from '../producto/entities/producto.entity.js';
-import { privateDecrypt } from 'crypto';
+
 
 @Injectable()
 export class DetallePedidoService {
