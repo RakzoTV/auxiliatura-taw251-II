@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, type Relation } from "typeorm";
+import { DetalleHabitacion } from "../../detalle_habitacion/entities/detalle_habitacion.entity.js";
+import { Reserva } from "../../reserva/entities/reserva.entity.js";
 
 @Entity()
 export class Habitacion {
@@ -20,5 +22,11 @@ export class Habitacion {
 
     @Column({length: 255})
     descripcion: string;
+
+    @OneToOne(() => DetalleHabitacion, (detalleHabitacion) => detalleHabitacion.habitacion)
+    detalleHabitacion: Relation<DetalleHabitacion>
+
+    @OneToMany(() => Reserva, (reserva) => reserva.habitacion)
+    reservas: Relation<Reserva[]>
 
 }

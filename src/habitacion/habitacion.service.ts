@@ -28,7 +28,8 @@ export class HabitacionService {
 
   async findAll() {
     //por detras el find hace: SELECT * FROM habitaciones
-    return await this.habitacionRepository.find();
+    return await this.habitacionRepository.find({relations: {detalleHabitacion: true, reservas: true}});
+    //relations por atras hace n join con detelle habitacion para traer los datos de la habitacion y su detalle habitacion
   }
 
   async findOne(id: number) {
