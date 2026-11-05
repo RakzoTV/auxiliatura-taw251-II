@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from "class-validator";
 
 export class CreateHabitacionDto {
     @IsNotEmpty()

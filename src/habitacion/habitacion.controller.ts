@@ -2,12 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { HabitacionService } from './habitacion.service.js';
 import { CreateHabitacionDto } from './dto/create-habitacion.dto.js';
 import { UpdateHabitacionDto } from './dto/update-habitacion.dto.js';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
 
 @Controller('habitacion')
 export class HabitacionController {
   constructor(private readonly habitacionService: HabitacionService) {}
 
   @Post()
+  @ApiOperation({ summary: "Crear una nueva habitacion"})
   create(@Body() createHabitacionDto: CreateHabitacionDto) {
     return this.habitacionService.create(createHabitacionDto);
   }
