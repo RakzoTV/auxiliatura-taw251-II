@@ -2,6 +2,7 @@ import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-valid
 
 export class CreateUsuarioDto {
 
+    /* INFORMACION DEL USUARIO QUE HAY QUE MANDAR */
     @IsString()
     @MaxLength(16)
     @MinLength(3)

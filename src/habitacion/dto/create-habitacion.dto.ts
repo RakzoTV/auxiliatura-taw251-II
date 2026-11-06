@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsIn, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
 
 export class CreateHabitacionDto {

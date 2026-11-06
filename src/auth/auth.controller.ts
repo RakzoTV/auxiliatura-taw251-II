@@ -4,6 +4,7 @@ import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { CreateUsuarioDto } from '../usuario/dto/create-usuario.dto.js';
 import { AuthGuard } from './guards/auth.guard.js';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
