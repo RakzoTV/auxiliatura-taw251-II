@@ -11,6 +11,8 @@ import { ProductoModule } from './producto/producto.module.js';
 import { CategoriaModule } from './categoria/categoria.module.js';
 import { PedidoModule } from './pedido/pedido.module.js';
 import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module.js';
+import { UsuarioModule } from './usuario/usuario.module.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
@@ -37,7 +39,9 @@ import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module.js';
     ProductoModule,
     CategoriaModule,
     PedidoModule,
-    DetallePedidoModule],
+    DetallePedidoModule,
+    UsuarioModule,
+    AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
