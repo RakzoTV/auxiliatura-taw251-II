@@ -13,6 +13,8 @@ import { PedidoModule } from './pedido/pedido.module.js';
 import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module.js';
 import { UsuarioModule } from './usuario/usuario.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { RolModule } from './rol/rol.module.js';
+import { UsuarioRolModule } from './usuario_rol/usuario_rol.module.js';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { AuthModule } from './auth/auth.module.js';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: "mysql",
+        type: "postgres",
         host: config.get<string>("DB_HOST"),
         port: Number(config.get("DB_PORT")),
         username: config.get<string>("DB_USER"),
@@ -41,7 +43,9 @@ import { AuthModule } from './auth/auth.module.js';
     PedidoModule,
     DetallePedidoModule,
     UsuarioModule,
-    AuthModule],
+    AuthModule,
+    RolModule,
+    UsuarioRolModule],
   controllers: [AppController],
   providers: [AppService],
 })

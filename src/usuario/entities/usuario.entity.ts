@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, type Relation } from "typeorm";
+import { UsuarioRol } from "../../usuario_rol/entities/usuario_rol.entity.js";
 
 @Entity()
 export class Usuario {
@@ -13,4 +14,7 @@ export class Usuario {
 
     @Column({length: 255, nullable: false})
     password: string;
+
+    @OneToMany(() => UsuarioRol, (usuarioRol) => usuarioRol.usuario)
+    roles: Relation<UsuarioRol[]>
 }

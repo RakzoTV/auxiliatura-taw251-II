@@ -11,7 +11,7 @@ export class Habitacion {
     @Column({length: 32})
     nombre: string;
 
-    @Column()
+    @Column({default: "individual"})
     tipo: "individual" | "doble" | "suite";
 
     @Column({type: "decimal", precision: 10, scale: 2})  //10.25
