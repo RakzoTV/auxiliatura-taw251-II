@@ -3,46 +3,53 @@ import { CreateUsuarioRolDto } from './dto/create-usuario_rol.dto.js';
 import { UpdateUsuarioRolDto } from './dto/update-usuario_rol.dto.js';
 import { Repository } from 'typeorm';
 import { UsuarioRol } from './entities/usuario_rol.entity.js';
-import { Usuario } from '../usuario/entities/usuario.entity.js';
-import { Rol } from '../rol/entities/rol.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Rol } from '../rol/entities/rol.entity.js';
+import { Usuario } from '../usuario/entities/usuario.entity.js';
 
 @Injectable()
 export class UsuarioRolService {
-
+  
   constructor(
     @InjectRepository(UsuarioRol)
-    private readonly usuarioRolRepo: Repository<UsuarioRol>,
-
-    @InjectRepository(Usuario)
-    private readonly usuarioRepo: Repository<Usuario>,
+    private readonly usuarioRolRepository: Repository<UsuarioRol>,
 
     @InjectRepository(Rol)
-    private readonly rolRepo: Repository<Rol>,
+    private readonly rolRepository: Repository<Rol>,
+
+    @InjectRepository(Usuario)
+    private readonly usuarioRepository: Repository<Usuario>
   ){}
 
   async create(createUsuarioRolDto: CreateUsuarioRolDto) {
-    const usuario = await this.usuarioRepo.findOneBy({idUsuario: createUsuarioRolDto.idUsuario})
+    const usuario = await this.usuarioRepository.findOneBy({
+      idUsuario: createUsuarioRolDto.idUsuario
+    });
+
     if(!usuario){
-      throw new NotFoundException("No existe el usuario")
+      throw new NotFoundException("El usuario no existe")
     }
 
-    const rol = await this.rolRepo.findOneBy({idRol: createUsuarioRolDto.idRol})
+    const rol = await this.rolRepository.findOneBy({
+      idRol: createUsuarioRolDto.idRol
+    })
+
     if(!rol){
-      throw new NotFoundException("No existe el rol")
+      throw new NotFoundException("El rol no existe")
     }
 
-    const usuarioRol = this.usuarioRolRepo.create({
+    const usuarioRol = this.usuarioRolRepository.create({
       ...createUsuarioRolDto,
       idUsuario: usuario.idUsuario,
       idRol: rol.idRol
     })
 
-    return this.usuarioRolRepo.save(usuarioRol)
+    return await this.usuarioRolRepository.save(usuarioRol)
+
   }
 
-  findAll() {
-    return `This action returns all usuarioRol`;
+  async findAll() {
+    return await this.usuarioRolRepository.find();
   }
 
   findOne(id: number) {

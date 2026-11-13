@@ -24,7 +24,7 @@ import { UsuarioRolModule } from './usuario_rol/usuario_rol.module.js';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: "mysql",
+        type: "postgres",
         host: config.get<string>("DB_HOST"),
         port: Number(config.get("DB_PORT")),
         username: config.get<string>("DB_USER"),

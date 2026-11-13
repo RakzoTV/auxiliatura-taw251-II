@@ -40,15 +40,22 @@ export class UsuarioService {
     // por atras el findOneBy hace un Select * from usuario where email = email
   }
 
-  async findOneByEmailWithPasswordAndRoles(email: string){
+  async findOneByEmailWithRoles(email: string){
     return await this.usuarioRepository.findOne({
       where: {email},
       relations: {roles: {rol: true}},
       select: {
-        idUsuario: true,
-        username: true,
         email: true,
-        password: true
+        idUsuario: true,
+        password: true,
+        username: true,
+        roles: {
+          idUsuarioRol: true,
+          rol: {
+            idRol: true,
+            nombreRol: true
+          }
+        }
       }
     })
   }

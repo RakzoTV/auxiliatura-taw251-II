@@ -4,30 +4,31 @@ import { Rol } from "../../rol/entities/rol.entity.js";
 
 @Entity()
 export class UsuarioRol {
+    
     @PrimaryGeneratedColumn()
     idUsuarioRol: number;
 
     @Column()
     idUsuario: number;
-    
+
     @Column()
     idRol: number;
 
     @CreateDateColumn()
-    asignadoEn: Date
+    asignadoEn: Date;
 
     @UpdateDateColumn()
-    actualizadoEn: Date
-
+    actualizadoEn: Date;
+    
     @DeleteDateColumn()
-    revocadoEn: Date
-
+    revocadoEn: Date;
 
     @ManyToOne(() => Usuario, (usuario) => usuario.roles)
     @JoinColumn({name: "idUsuario", referencedColumnName: "idUsuario"})
-    usuario: Relation<Usuario>
+    usuario: Relation<Usuario>;
 
     @ManyToOne(() => Rol, (rol) => rol.usuarios)
     @JoinColumn({name: "idRol", referencedColumnName: "idRol"})
-    rol: Relation<Rol>
+    rol: Relation<Rol>;
+
 }
