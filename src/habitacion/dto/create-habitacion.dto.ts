@@ -1,15 +1,27 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsIn, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
 
 export class CreateHabitacionDto {
     @IsNotEmpty()
-    @IsNumber()
-    idHabitacion: number
+    @IsString()
+    @Length(3, 32)
+    nombre: string;
 
     @IsNotEmpty()
     @IsString()
-    nombre: string;
+    @IsIn(["individual", "doble", "suite"])
     tipo: "individual" | "doble" | "suite";
+
+    @IsNotEmpty()
+    @IsNumber({ maxDecimalPlaces: 2 })
     precioPorNoche: number;
+
+    @IsNotEmpty()
+    @IsNumber({maxDecimalPlaces: 0})
     capacidad: number;
+
+    @IsNotEmpty()
+    @IsString()
+    @Length(3, 255)
     descripcion: string;
 }

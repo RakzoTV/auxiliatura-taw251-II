@@ -1,49 +1,39 @@
 import { Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto.js';
 import { UpdateReservaDto } from './dto/update-reserva.dto.js';
-import { reservaData } from './entities/reserva.data.js';
-import { Habitaciones } from '../habitacion/entities/habitacion.data.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Reserva } from './entities/reserva.entity.js';
+import { Repository } from 'typeorm';
+import { Habitacion } from '../habitacion/entities/habitacion.entity.js';
+
 
 @Injectable()
 export class ReservaService {
-  create(createReservaDto: CreateReservaDto) {
 
-    const habitacion = Habitaciones.find((h) => h.idHabitacion === createReservaDto.habitacionId)
+  constructor(
+    @InjectRepository(Reserva)
+    private readonly reservaRespository: Repository<Reserva>,
 
+    @InjectRepository(Habitacion)
+    private readonly habitacionRepository: Repository<Habitacion> 
+  ) {}
+
+  async create(createReservaDto: CreateReservaDto) {
+    const habitacion = await this.habitacionRepository.findOneBy({idHabitacion: createReservaDto.idHabitacion});
     if(!habitacion){
-      throw new NotFoundException("Habitacion no encontrada")
+      throw new NotFoundException("la habitacion no existe")
     }
 
-    if(createReservaDto.fechaCheckOut <= createReservaDto.fechaCheckIn){
-      throw new PreconditionFailedException("La fecha de check-out debe ser posterior a la fecha de check-in")
-    }
-
-    if(createReservaDto.cantidadHuespedes > habitacion.capacidad){
-      throw new PreconditionFailedException(`La cantidad de huéspedes excede la capacidad de la habitación: ${habitacion.capacidad}`)
-    }
-    
-
-    const noches = createReservaDto.fechaCheckIn && createReservaDto.fechaCheckOut
-      ? Math.ceil((createReservaDto.fechaCheckOut.getTime() - createReservaDto.fechaCheckIn.getTime()) / (1000 * 60 * 60 * 24))
-      : 0;
-
-    const precioTotal = noches * habitacion.precioPorNoche;
-
-    const nuevaReserva = {
+    const reserva = this.reservaRespository.create({
       ...createReservaDto,
-      precioTotal: precioTotal,
-      idReserva: createReservaDto.idReserva
-    }
-    reservaData.push(nuevaReserva)
-    return  {
-      ...nuevaReserva,
-      precioTotal: precioTotal,
-      noches: noches
-    };
+      idHabitacion: habitacion.idHabitacion,
+    })
+
+    return await this.reservaRespository.save(reserva)
   }
 
-  findAll() {
-    return reservaData;
+  async findAll() {
+    return await this.reservaRespository.find()
   }
 
   findOne(id: number) {
@@ -57,4 +47,4 @@ export class ReservaService {
   remove(id: number) {
     return `This action removes a #${id} reserva`;
   }
-}
+ }
