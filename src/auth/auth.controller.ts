@@ -5,6 +5,10 @@ import { LoginDto } from './dto/login.dto.js';
 import { CreateUsuarioDto } from '../usuario/dto/create-usuario.dto.js';
 import { AuthGuard } from './guards/auth.guard.js';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from './decorators/roles.decorator.js';
+import { TipoRol } from '../rol/entities/rol.entity.js';
+import { RolesGuard } from './guards/roles.guard.js';
+import { Auth } from './decorators/auth.decorator.js';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +28,7 @@ export class AuthController {
     }
 
     @Get("prueba")
-    @UseGuards(AuthGuard)
+    @Auth([TipoRol.ADMIN])
     prueba(@Request() req: any ){
         return req.user
     }

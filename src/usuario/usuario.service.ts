@@ -40,8 +40,30 @@ export class UsuarioService {
     // por atras el findOneBy hace un Select * from usuario where email = email
   }
 
-  findAll() {
-    return `This action returns all usuario`;
+  async findOneByEmailWithPasswordAndRoles(email: string){
+    return await this.usuarioRepository.findOne({
+      where: {email},
+      relations: {roles: {rol: true}},
+      select: {
+        idUsuario: true,
+        username: true,
+        email: true,
+        password: true
+      }
+    })
+  }
+
+  async findAll() {
+    const usuarios = await this.usuarioRepository.find({
+      relations: {roles: {rol: true}}
+    });
+
+    return usuarios.map(
+      ({roles, ...u}) => ({
+        ...u,
+        roles: roles.map((rol) => rol.rol.nombreRol)
+      })
+    )
   }
 
   findOne(id: number) {

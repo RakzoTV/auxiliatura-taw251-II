@@ -13,7 +13,7 @@ export class AuthService {
     ){}
 
     async login(loginDto: LoginDto) {
-        const usuario = await this.usuarioService.findOneByEmail(loginDto.email)
+        const usuario = await this.usuarioService.findOneByEmailWithPasswordAndRoles(loginDto.email)
         if(!usuario){
             throw new UnauthorizedException("El email no esta registrado")
         }
@@ -26,7 +26,8 @@ export class AuthService {
         const payload = {
             idUsuario: usuario.idUsuario,
             usuario: usuario.username,
-            email: usuario.email
+            email: usuario.email,
+            roles: usuario.roles.map((rol) => rol.rol.nombreRol)
         }
 
         const token = await this.jwtService.signAsync(payload)
@@ -37,7 +38,8 @@ export class AuthService {
             mensaje: "login exitoso",
             token: token,
             usuario: usuario.username,
-            email: usuario.email
+            email: usuario.email,
+            roles: usuario.roles.map((rol) => rol.rol.nombreRol)
         }
     }
 
