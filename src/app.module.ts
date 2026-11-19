@@ -15,6 +15,7 @@ import { UsuarioModule } from './usuario/usuario.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { RolModule } from './rol/rol.module.js';
 import { UsuarioRolModule } from './usuario_rol/usuario_rol.module.js';
+import { ReporteModule } from './reporte/reporte.module.js';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { UsuarioRolModule } from './usuario_rol/usuario_rol.module.js';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: "postgres",
+        type: "mysql",
         host: config.get<string>("DB_HOST"),
         port: Number(config.get("DB_PORT")),
         username: config.get<string>("DB_USER"),
@@ -45,7 +46,8 @@ import { UsuarioRolModule } from './usuario_rol/usuario_rol.module.js';
     UsuarioModule,
     AuthModule,
     RolModule,
-    UsuarioRolModule],
+    UsuarioRolModule,
+    ReporteModule],
   controllers: [AppController],
   providers: [AppService],
 })

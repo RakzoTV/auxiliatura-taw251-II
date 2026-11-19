@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { HabitacionService } from './habitacion.service.js';
 import { CreateHabitacionDto } from './dto/create-habitacion.dto.js';
 import { UpdateHabitacionDto } from './dto/update-habitacion.dto.js';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { Auth } from '../auth/decorators/auth.decorator.js';
 import { TipoRol } from '../rol/entities/rol.entity.js';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imagenMulterOptions } from '../common/multer.config.js';
 
 
 @Controller('habitacion')
@@ -12,10 +14,14 @@ export class HabitacionController {
   constructor(private readonly habitacionService: HabitacionService) {}
 
   @Post()
-  //@Auth([TipoRol.ADMIN])
+  @UseInterceptors(FileInterceptor("imagen", imagenMulterOptions))
+  @ApiConsumes("multipart/form-data")
   @ApiOperation({ summary: "Crea una nueva habitacion"})
-  create(@Body() createHabitacionDto: CreateHabitacionDto) {
-    return this.habitacionService.create(createHabitacionDto);
+  create(
+    @Body() createHabitacionDto: CreateHabitacionDto,
+    @UploadedFile() imagen?: Express.Multer.File
+  ) {
+    return this.habitacionService.create(createHabitacionDto, imagen);
   }
 
   @Get()

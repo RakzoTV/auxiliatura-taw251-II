@@ -7,6 +7,9 @@ import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Habitacion } from './entities/habitacion.entity.js';
 import { Repository } from 'typeorm';
+import { extname, join } from 'path';
+import { rename } from 'fs/promises';
+import { UPLOADS_DIR } from '../common/multer.config.js';
 
 @Injectable()
 export class HabitacionService {
@@ -14,29 +17,44 @@ export class HabitacionService {
   constructor(
     @InjectRepository(Habitacion)
     private readonly habitacionRepository: Repository<Habitacion>
-  ){}
+  ) { }
 
-  async create(createHabitacionDto: CreateHabitacionDto) {
-    //Paso 1 crear el registro con los datos que vengan del dto
-      const habitacion = this.habitacionRepository.create(createHabitacionDto);
+  private async renameImagen(habitacion: Habitacion, archivo: Express.Multer.File) {
+    const ext = extname(archivo.filename);
+    const slug = habitacion.nombre
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase().replace(/[^a-z0-9]/g, "_");
+    const nombre = `habitacion_${habitacion.idHabitacion}_${slug}_${Date.now()}${ext}`;
 
-      //Paso 2 guardar el registro en la bd
-      return await this.habitacionRepository.save(habitacion);
-      //el save por detras hace INSERT INTO habitaciones(nombre, tipo, precioPorNoche, capacidad, descripcion) VALUES (?,?,?,?,?)
-      //con los valores del create/dto y devuelve el registro que se guardo en la bd con el idHabitacion generado por la bd
+    await rename(join(UPLOADS_DIR, archivo.filename), join(UPLOADS_DIR, nombre));
+    return nombre;
+  }
+
+
+  async create(createHabitacionDto: CreateHabitacionDto, imagen?: Express.Multer.File) {
+    let habitacion = this.habitacionRepository.create(createHabitacionDto);
+    habitacion = await this.habitacionRepository.save(habitacion);
+
+    if(imagen){
+      habitacion.imagen = await this.renameImagen(habitacion, imagen);
+      habitacion = await this.habitacionRepository.save(habitacion);
+    }
+
+    return habitacion;
+
   }
 
   async findAll() {
     //por detras el find hace: SELECT * FROM habitaciones
-    return await this.habitacionRepository.find({relations: {detalleHabitacion: true, reservas: true}});
+    return await this.habitacionRepository.find({ relations: { detalleHabitacion: true, reservas: true } });
     //relations por atras hace n join con detelle habitacion para traer los datos de la habitacion y su detalle habitacion
   }
 
   async findOne(id: number) {
 
     //findOneBy por detras hace SELECT * FROM habitaciones WHERE idHabitacion = ?
-    const habitacion = await this.habitacionRepository.findOneBy({idHabitacion: id})
-    if(!habitacion){
+    const habitacion = await this.habitacionRepository.findOneBy({ idHabitacion: id })
+    if (!habitacion) {
       throw new NotFoundException("habitacion no encontrada")
     }
 

@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { IsIn, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
 
 export class CreateHabitacionDto {
@@ -12,10 +13,12 @@ export class CreateHabitacionDto {
     @IsIn(["individual", "doble", "suite"])
     tipo: "individual" | "doble" | "suite";
 
+    @Type(() => Number)
     @IsNotEmpty()
     @IsNumber({ maxDecimalPlaces: 2 })
     precioPorNoche: number;
 
+    @Type(() => Number)
     @IsNotEmpty()
     @IsNumber({maxDecimalPlaces: 0})
     capacidad: number;
