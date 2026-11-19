@@ -23,6 +23,9 @@ export class Habitacion {
     @Column({length: 255})
     descripcion: string;
 
+    @Column({type: "varchar", nullable: true})
+    imagen: string | null;
+
     @OneToOne(() => DetalleHabitacion, (detalleHabitacion) => detalleHabitacion.habitacion)
     detalleHabitacion: Relation<DetalleHabitacion>
 

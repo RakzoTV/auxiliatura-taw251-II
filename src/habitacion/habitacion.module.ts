@@ -8,5 +8,6 @@ import { Habitacion } from './entities/habitacion.entity.js';
   imports: [TypeOrmModule.forFeature([Habitacion])],
   controllers: [HabitacionController],
   providers: [HabitacionService],
+  exports: [HabitacionService]
 })
 export class HabitacionModule {}
